@@ -4,6 +4,17 @@
 ;subrutinas
 
 
+SECTION	.data
+	nula	db	0Ah,0h
+	vacia	db	' ',0Ah, 0h
+	escSeq 	db 27,"[2J"
+    escLen 	equ 4
+    prin 	db 27
+    goto    db 27,"[00;00H"
+   	longi   equ 8
+   	posyx	db 1Bh, '[01;01H', 0h
+;------------------------------------------------------
+
 
 ;-------calculo de longitud de cadena------
 ; strLen(eax=cadena) -> eax in n=longitud
@@ -28,7 +39,7 @@ finLen:
 
 printStr:
 
-	push 	adx
+	push 	edx
 	push 	ecx
 	push 	ebx 
 	push 	eax 
@@ -202,18 +213,35 @@ gotoxy:
 	add		edx, 48
 	mov 	byte [ecx + 5], al 
 	mov 	byte [ecx + 6], dl 
-	;--------------
+;--------------
 	mov 	eax, posyx
-	call	print
+	call	printStr
 	pop 	eax
 	pop 	ebx
 	pop 	ecx
 	pop 	edx
 	ret
 ;-----------------------
+
+;-------cls-----------------limpia la pantalla
+cls:
+   	mov 	eax,4
+   	mov 	ebx,1
+   	mov 	ecx, escSeq
+   	mov 	edx, escLen
+   	int 	80h
+xy:;va a 0,0
+	mov 	eax,4
+   	mov 	ebx,1
+   	mov 	ecx, goto
+   	mov 	edx, longi
+   	int 	80h
+   	ret
+;-------
+
 ;-------endrpogram----------
 endP: 
 	mov 	ebx, 0		;return 0
 	mov	eax, 1		    ;llamar a SYS_EXIT (kernerl opcode 1)
 	int	80h
-	;-----------
+;-----------
