@@ -16,14 +16,6 @@ SECTION		.data
 	pru 	db 		'prueba', 0h
 	p 		db		'Desea realizar otra operación? (1=si , 0=no) ',0h
 
-;------------Peticion de datos //:'c
-    numero1  db 	`Ingrese el primer número: \n`, 0
-    nula1 	db 	`\n`, 0
-    numero2 db 	`Ingrese el segundo número: \n`, 0
-    fmt     db  `%lf`, 0
-    resul    db  `Resultado =  %lf`, 0
-    modul	db 	"El modulo es: ",0
-    resi	db 	"El residuo es: ",0
     
 ;--------cuadrocalc
 	e1		db		'┌', 0h
@@ -89,18 +81,7 @@ SECTION		.text
 		mov		al, 39d
 		call	gotoxy
 		
-;-----Peticion de datos al usuario
-		mov		eax, 3			;Invoca el SYS_READ (Kernel opcode 3)
-		mov		ebx, 0			;Escribe al archivo STDIN
-		mov		ecx, opcion
-		mov		edx, 8
-		int 	80H
-		mov		ecx, opcion
-		mov		edx, opcion
-		call	chartoint		  ;convierte la entrada a int para poderda evaluar
-		mov		ecx, edx
-		call 	readOption		;llamada a la lectura de la opción
-		call	endP;////
+
 ;------------------------------------------------------
 	
 	recuadro:
@@ -133,52 +114,7 @@ SECTION		.text
 		mov 	eax, e4
 		call	printStr
 		ret
-;----------- 1 sigue o 2 no 
-	repeat:						
-		mov		ah, 17d
-		mov		al, 16d
-		call	gotoxy
-		mov 	eax, p
-		call 	printStr
-		mov		eax, 3			;Invoca el SYS_READ (Kernel opcode 3)
-		mov		ebx, 0			;Escribe al archivo STDIN
-		mov		ecx, opcion
-		mov		edx, 8
-		int 	80H
-		mov		ecx, opcion
-		mov		edx, opcion
-		call	chartoint		;convierte a entero la opcion ingresada
-		mov		ecx, edx
-		mov		eax, ecx
-		mov		ebx, 1d
-		cmp		eax, ebx
-		je		main			;si el número es 1 regresa al main
-		ret
 
-	readOption:						;lee la opción que está en ecx
-		mov		eax, ecx			;comprobaciones para saltar al 
-		mov		ebx, 1d 			;método correcto.
-		cmp		eax, ebx
-		je		suma
-		mov		ebx, 2d
-		cmp		eax, ebx
-		je		resta
-		mov		ebx, 3d
-		cmp		eax, ebx
-		je		multiplicacion
-		mov		ebx, 4d
-		cmp		eax, ebx
-		je		divisionR
-		mov		ebx, 5d
-		cmp		eax, ebx
-		je		modulo
-		mov		ah, 16d
-		mov		al, 31d
-		call	gotoxy
-		mov 	eax, noOp 			;mover cadena de error
-		call	printIntLn
-		call 	repeat
-		ret
 
 ;---------suma de floatsxd
 	suma:
@@ -437,4 +373,3 @@ SECTION		.text
 		call	gotoxy
 		call 	repeat
 		ret
-
